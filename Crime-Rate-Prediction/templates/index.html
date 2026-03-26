@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Rate Predictor | AI-Powered Safety Analytics</title>
+    <link rel="icon" href="static/images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CrimePredix</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Crime Rate Predictor</span>
+                </h1>
+                <p class="hero-subtitle">Advanced AI-Powered Predictive Analytics for Urban Safety</p>
+                <p class="hero-description">
+                    Harness the power of machine learning to predict crime patterns and allocate resources effectively
+                </p>
+                <a href="#predictor" class="cta-button">
+                    <span>Start Predicting</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <i class="fas fa-chart-line"></i>
+                    <p>93.20%</p>
+                    <span>Accuracy</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-city"></i>
+                    <p>19</p>
+                    <span>Cities</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-list"></i>
+                    <p>10</p>
+                    <span>Crime Types</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Predictor Section -->
+    <section class="predictor-section" id="predictor">
+        <div class="container">
+            <div class="section-header">
+                <h2>Make Your Prediction</h2>
+                <p>Enter the details below to get accurate crime rate predictions</p>
+            </div>
+
+            <!-- Mode Switcher -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+                <button class="mode-button active" onclick="switchMode('predict')">
+                    <i class="fas fa-search"></i> Single Prediction
+                </button>
+                <button class="mode-button" onclick="switchMode('compare')">
+                    <i class="fas fa-exchange-alt"></i> Compare Cities
+                </button>
+            </div>
+
+            <!-- Prediction Mode -->
+            <div id="predict-mode" class="mode-content active">
+                <div class="predictor-card">
+                    <form action="/predict" method="POST" class="prediction-form">
+                        <div class="form-grid">
+                            <!-- City Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Select City
+                                </label>
+                                <div class="select-wrapper">
+                                    <select name="city" id="city-select" class="form-input" required>
+                                        <option value="">-- Choose a city --</option>
+                                        <option value="0">🏙️ Ahmedabad</option>
+                                        <option value="1">🏙️ Bengaluru</option>
+                                        <option value="2">🏙️ Chennai</option>
+                                        <option value="3">🏙️ Coimbatore</option>
+                                        <option value="4">🏙️ Delhi</option>
+                                        <option value="5">🏙️ Ghaziabad</option>
+                                        <option value="6">🏙️ Hyderabad</option>
+                                        <option value="7">🏙️ Indore</option>
+                                        <option value="8">🏙️ Jaipur</option>
+                                        <option value="9">🏙️ Kanpur</option>
+                                        <option value="10">🏙️ Kochi</option>
+                                        <option value="11">🏙️ Kolkata</option>
+                                        <option value="12">🏙️ Kozhikode</option>
+                                        <option value="13">🏙️ Lucknow</option>
+                                        <option value="14">🏙️ Mumbai</option>
+                                        <option value="15">🏙️ Nagpur</option>
+                                    <option value="16">🏙️ Patna</option>
+                                    <option value="17">🏙️ Pune</option>
+                                    <option value="18">🏙️ Surat</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Crime Type Selection -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Crime Category
+                            </label>
+                            <div class="select-wrapper">
+                                <select name="crime" id="crime-select" class="form-input" required>
+                                    <option value="">-- Choose crime type --</option>
+                                    <option value="9">🔫 Murder</option>
+                                    <option value="8">👤 Kidnapping</option>
+                                    <option value="7">💼 Economic Offences</option>
+                                    <option value="6">💻 Cyber Crimes</option>
+                                    <option value="5">👩 Crime Against Women</option>
+                                    <option value="4">👧 Crime Against Children</option>
+                                    <option value="3">👴 Crime Against Senior Citizens</option>
+                                    <option value="2">⚖️ Crime Against ST</option>
+                                    <option value="1">⚖️ Crime Against SC</option>
+                                    <option value="0">🧒 Crime by Juveniles</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Year Selection -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-calendar"></i>
+                                Year
+                            </label>
+                            <div class="select-wrapper">
+                                <select name="year" id="year-dropdown" class="form-input" required>
+                                    <option value="">-- Choose year --</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">
+                        <span>Predict Crime Rate</span>
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                </form>
+                </div>
+            </div>
+
+            <!-- Comparison Mode -->
+            <div id="compare-mode" class="mode-content">
+                <div class="predictor-card">
+                    <form action="/compare" method="POST" class="prediction-form">
+                        <div class="form-grid">
+                            <!-- City 1 Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-city"></i>
+                                    From City
+                                </label>
+                                <div class="select-wrapper">
+                                    <select name="city1" id="city1-select" class="form-input" required>
+                                        <option value="">-- Choose a city --</option>
+                                        <option value="0">🏙️ Ahmedabad</option>
+                                        <option value="1">🏙️ Bengaluru</option>
+                                        <option value="2">🏙️ Chennai</option>
+                                        <option value="3">🏙️ Coimbatore</option>
+                                        <option value="4">🏙️ Delhi</option>
+                                        <option value="5">🏙️ Ghaziabad</option>
+                                        <option value="6">🏙️ Hyderabad</option>
+                                        <option value="7">🏙️ Indore</option>
+                                        <option value="8">🏙️ Jaipur</option>
+                                        <option value="9">🏙️ Kanpur</option>
+                                        <option value="10">🏙️ Kochi</option>
+                                        <option value="11">🏙️ Kolkata</option>
+                                        <option value="12">🏙️ Kozhikode</option>
+                                        <option value="13">🏙️ Lucknow</option>
+                                        <option value="14">🏙️ Mumbai</option>
+                                        <option value="15">🏙️ Nagpur</option>
+                                        <option value="16">🏙️ Patna</option>
+                                        <option value="17">🏙️ Pune</option>
+                                        <option value="18">🏙️ Surat</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- City 2 Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-building"></i>
+                                    To City
+                                </label>
+                                <div class="select-wrapper">
+                                    <select name="city2" id="city2-select" class="form-input" required>
+                                        <option value="">-- Choose a city --</option>
+                                        <option value="0">🏙️ Ahmedabad</option>
+                                        <option value="1">🏙️ Bengaluru</option>
+                                        <option value="2">🏙️ Chennai</option>
+                                        <option value="3">🏙️ Coimbatore</option>
+                                        <option value="4">🏙️ Delhi</option>
+                                        <option value="5">🏙️ Ghaziabad</option>
+                                        <option value="6">🏙️ Hyderabad</option>
+                                        <option value="7">🏙️ Indore</option>
+                                        <option value="8">🏙️ Jaipur</option>
+                                        <option value="9">🏙️ Kanpur</option>
+                                        <option value="10">🏙️ Kochi</option>
+                                        <option value="11">🏙️ Kolkata</option>
+                                        <option value="12">🏙️ Kozhikode</option>
+                                        <option value="13">🏙️ Lucknow</option>
+                                        <option value="14">🏙️ Mumbai</option>
+                                        <option value="15">🏙️ Nagpur</option>
+                                        <option value="16">🏙️ Patna</option>
+                                        <option value="17">🏙️ Pune</option>
+                                        <option value="18">🏙️ Surat</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Crime Type Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Crime Category
+                                </label>
+                                <div class="select-wrapper">
+                                    <select name="crime" id="crime-select-compare" class="form-input" required>
+                                        <option value="">-- Choose crime type --</option>
+                                        <option value="9">🔫 Murder</option>
+                                        <option value="8">👤 Kidnapping</option>
+                                        <option value="7">💼 Economic Offences</option>
+                                        <option value="6">💻 Cyber Crimes</option>
+                                        <option value="5">👩 Crime Against Women</option>
+                                        <option value="4">👧 Crime Against Children</option>
+                                        <option value="3">👴 Crime Against Senior Citizens</option>
+                                        <option value="2">⚖️ Crime Against ST</option>
+                                        <option value="1">⚖️ Crime Against SC</option>
+                                        <option value="0">🧒 Crime by Juveniles</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Year Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Year
+                                </label>
+                                <div class="select-wrapper">
+                                    <select name="year" id="year-dropdown-compare" class="form-input" required>
+                                        <option value="">-- Choose year --</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-button">
+                            <span>Compare Cities</span>
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Us?</h2>
+                <p>Industry-leading crime prediction technology</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced Random Forest algorithms for accurate predictions</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>High Accuracy</h3>
+                    <p>93.20% accuracy on comprehensive test datasets</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Rich Data</h3>
+                    <p>8 years of historical data from NCRB database</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Wide Coverage</h3>
+                    <p>19 Indian metropolitan cities included</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-list-check"></i>
+                    </div>
+                    <h3>10 Crime Categories</h3>
+                    <p>Comprehensive crime type classifications</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Data processed locally with no external sharing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About This Application</h2>
+            </div>
+
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>What is Crime Rate Prediction?</h3>
+                    <p>
+                        Crime rate prediction has become an important tool for law enforcement agencies to better understand patterns of crime and anticipate where crime is likely to occur. By predicting future crime trends, agencies can allocate resources more effectively to areas with anticipated increases in criminal activity.
+                    </p>
+
+                    <h3>Our Dataset</h3>
+                    <p>
+                        We use comprehensive data from the Indian National Crime Rate Bureau (NCRB) covering 19 metropolitan cities from 2014 to 2021. This includes statistics on 10 different crime categories including murder, kidnapping, cybercrime, economic offences, and crimes against specific populations.
+                    </p>
+
+                    <h3>The Technology</h3>
+                    <p>
+                        Our system uses scikit-learn's Random Forest Regression model—an ensemble learning technique that creates multiple decision trees and averages their predictions for superior accuracy. This approach achieves a remarkable 93.20% accuracy on test datasets.
+                    </p>
+
+                    <a href="https://drive.google.com/file/d/1dl3VoV-MrKJL1KnST8aWUr32Hqn7ACEs/view?usp=sharing" target="_blank" class="report-link">
+                        <i class="fas fa-file-pdf"></i>
+                        View Full Project Report
+                    </a>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">93.20%</div>
+                        <div class="stat-label">Model Accuracy</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">19</div>
+                        <div class="stat-label">Cities Covered</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">10</div>
+                        <div class="stat-label">Crime Types</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Years of Data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+
+    <script src="static/main.js"></script>
+</body>
+</html>

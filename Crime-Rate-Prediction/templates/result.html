@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Rate Prediction Results</title>
+    <link rel="icon" href="static/images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        .results-section {
+            min-height: auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .results-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .result-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .result-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .tab-button.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-button:hover {
+            color: #6366f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: #f8fafc;
+            padding-left: 2rem;
+        }
+
+        .result-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .result-label i {
+            font-size: 1.3rem;
+            color: #6366f1;
+        }
+
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        .status-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .status-title {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+
+        .crime-rate-large {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .status-message {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label-small {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .map-container {
+            position: relative;
+            height: 500px;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .emergency-card {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .emergency-card h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .emergency-card p {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .tips-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #0284c7;
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+        }
+
+        .tip-card p {
+            margin: 0;
+            color: #0c4a6e;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary, .btn-tertiary {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6366f1;
+            border: 2px solid #6366f1;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .details-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .details-section h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .details-section p {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+
+        .crime-rate-interpretation {
+            padding: 1.5rem;
+            background: white;
+            border-left: 4px solid #6366f1;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .result-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .crime-rate-large {
+                font-size: 2rem;
+            }
+
+            .tabs-nav {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CrimePredix</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Results Section -->
+    <section class="results-section">
+        <div class="results-container">
+            <div class="result-header">
+                <h1>Your Prediction Results</h1>
+                <p>Crime Rate Analysis & Forecasting</p>
+            </div>
+
+            <!-- Tabbed Interface -->
+            <div class="result-card">
+                <div class="tabs-nav">
+                    <button class="tab-button active" onclick="switchTab('overview')">
+                        <i class="fas fa-chart-pie"></i> Overview
+                    </button>
+                    <button class="tab-button" onclick="switchTab('trends')">
+                        <i class="fas fa-chart-line"></i> Trends
+                    </button>
+                    <button class="tab-button" onclick="switchTab('map')">
+                        <i class="fas fa-map"></i> Location Map
+                    </button>
+                    <button class="tab-button" onclick="switchTab('emergency')">
+                        <i class="fas fa-phone"></i> Emergency
+                    </button>
+                    <button class="tab-button" onclick="switchTab('safety')">
+                        <i class="fas fa-shield-alt"></i> Safety Tips
+                    </button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-content active">
+                    <!-- Selected Parameters -->
+                    <div class="result-item">
+                        <div class="result-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            City
+                        </div>
+                        <div class="result-value">{{city_name}}</div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Crime Type
+                        </div>
+                        <div class="result-value">{{crime_type}}</div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            <i class="fas fa-calendar"></i>
+                            Year
+                        </div>
+                        <div class="result-value">{{year}}</div>
+                    </div>
+
+                    <!-- Status Display -->
+                    <div class="status-display">
+                        <div class="status-title">Crime Status Assessment</div>
+                        <div class="status-badge">{{crime_status}}</div>
+                        <div class="crime-rate-large">{{crime_rate}}</div>
+                        <div class="status-message">Estimated Crime Rate per Lakh Population</div>
+                    </div>
+
+                    <!-- Key Statistics -->
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-num">{{cases}}</div>
+                            <div class="stat-label-small">Estimated Cases</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <div class="stat-num">{{population}}</div>
+                            <div class="stat-label-small">Population (Lakhs)</div>
+                        </div>
+                    </div>
+
+                    <!-- Details & Interpretation -->
+                    <div class="details-section">
+                        <h3>
+                            <i class="fas fa-info-circle"></i>
+                            What This Means
+                        </h3>
+                        <p>
+                            Based on our Random Forest Regression model trained on 8 years of NCRB data, 
+                            this prediction shows the expected crime rate for {{crime_type}} in {{city_name}} 
+                            during {{year}}.
+                        </p>
+                        <div class="crime-rate-interpretation">
+                            <strong>Crime Rate Scale:</strong><br>
+                            • <span style="color: #10b981;">≤ 1</span>: Very Low Crime Area<br>
+                            • <span style="color: #f59e0b;">1-5</span>: Low Crime Area<br>
+                            • <span style="color: #f97316;">5-15</span>: High Crime Area<br>
+                            • <span style="color: #ef4444;">> 15</span>: Very High Crime Area
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trends Tab -->
+                <div id="trends" class="tab-content">
+                    <h3 style="color: #1e293b; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line" style="color: #6366f1; margin-right: 8px;"></i>
+                        5-Year Crime Rate Forecast
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <p style="color: #64748b; margin-top: 1rem; text-align: center;">
+                        This chart shows the predicted crime rate trend for {{crime_type}} in {{city_name}} over the next 5 years.
+                    </p>
+                </div>
+
+                <!-- Map Tab -->
+                <div id="map" class="tab-content">
+                    <h3 style="color: #1e293b; margin-bottom: 1rem;">
+                        <i class="fas fa-map" style="color: #6366f1; margin-right: 8px;"></i>
+                        Geographic Location
+                    </h3>
+                    <div class="map-container">
+                        {{map_html|safe}}
+                    </div>
+                </div>
+
+                <!-- Emergency Tab -->
+                <div id="emergency" class="tab-content">
+                    <h3 style="color: #1e293b; margin-bottom: 1rem;">
+                        <i class="fas fa-phone" style="color: #6366f1; margin-right: 8px;"></i>
+                        Emergency Contacts for {{city_name}}
+                    </h3>
+                    {% if emergency %}
+                    <div class="emergency-grid">
+                        <div class="emergency-card">
+                            <h4><i class="fas fa-police"></i> Police</h4>
+                            <p>{{emergency.get('police', 'N/A')}}</p>
+                        </div>
+                        <div class="emergency-card">
+                            <h4><i class="fas fa-female"></i> Women Helpline</h4>
+                            <p>{{emergency.get('women_helpline', '1091')}}</p>
+                        </div>
+                        <div class="emergency-card">
+                            <h4><i class="fas fa-laptop"></i> Cyber Cell</h4>
+                            <p>{{emergency.get('cyber_cell', 'N/A')}}</p>
+                        </div>
+                        <div class="emergency-card">
+                            <h4><i class="fas fa-hospital"></i> Medical Emergency</h4>
+                            <p>{{emergency.get('medical', '102')}}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="no-data">
+                        <p>Emergency contact information not available for this city.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Safety Tips Tab -->
+                <div id="safety" class="tab-content">
+                    <h3 style="color: #1e293b; margin-bottom: 1rem;">
+                        <i class="fas fa-shield-alt" style="color: #6366f1; margin-right: 8px;"></i>
+                        Safety Tips for {{crime_type}}
+                    </h3>
+                    {% if tips %}
+                    <div class="tips-container">
+                        {% for tip in tips %}
+                        <div class="tip-card">
+                            <p>{{tip}}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="no-data">
+                        <p>Safety tips not available for this crime category.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/" class="btn-primary">
+                    <i class="fas fa-redo"></i>
+                    Make Another Prediction
+                </a>
+                <button class="btn-tertiary" onclick="generatePDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    Download PDF Report
+                </button>
+                <button class="btn-secondary" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    Print Results
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    
+
+    <script>
+        // Tab switching function
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Reinitialize chart if trends tab is opened
+            if (tabName === 'trends') {
+                setTimeout(initChart, 100);
+            }
+        }
+
+        // Chart.js initialization
+        let chartInstance = null;
+
+        function initChart() {
+            const ctx = document.getElementById('trendChart');
+            if (!ctx) return;
+
+            const trendsData = JSON.parse('{{ trends | safe }}');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trendsData.map(t => t.year),
+                    datasets: [{
+                        label: 'Crime Rate (per lakh population)',
+                        data: trendsData.map(t => t.rate),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                font: { size: 14, weight: 'bold' },
+                                color: '#1e293b',
+                                padding: 15
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // PDF Generation
+        function generatePDF() {
+            const reportData = {
+                city_name: '{{city_name}}',
+                crime_type: '{{crime_type}}',
+                year: '{{year}}',
+                crime_status: '{{crime_status}}',
+                crime_rate: '{{crime_rate}}',
+                cases: '{{cases}}',
+                population: '{{population}}'
+            };
+
+            fetch('/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reportData)
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'crime_report_{{city_name}}_{{year}}.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating PDF. Please try again.');
+            });
+        }
+
+        // Initialize chart when page loads
+        window.addEventListener('load', function() {
+            // Animate stat items
+            document.querySelectorAll('.stat-item').forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation = 'slideUp 0.6s ease-out forwards';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

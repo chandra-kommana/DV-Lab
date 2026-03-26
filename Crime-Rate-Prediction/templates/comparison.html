@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Comparison - Crime Rate Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .nav-logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Comparison Card */
+        .comparison-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        /* City Comparison Section */
+        .city-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .city-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .city-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .city-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .city-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .crime-metric {
+            margin: 1.5rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .crime-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Comparison Indicator */
+        .comparison-indicator {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .vs-badge {
+            background: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Verdict Section */
+        .verdict-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .verdict-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+
+        .verdict-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .verdict-description {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        /* Trade-off Analysis */
+        .tradeoff-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .crime-comparison-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--light-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .crime-comparison-item:hover {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .crime-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .crime-icon {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .rate-display {
+            text-align: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .change-badge {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .change-positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .change-negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .safer-badge {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        /* Overall Score */
+        .overall-score {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .score-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            opacity: 0.95;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-color);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .city-comparison {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .comparison-indicator {
+                padding: 1rem 0;
+            }
+
+            .crime-comparison-item {
+                grid-template-columns: 1fr;
+            }
+
+            .overall-score {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .comparison-card {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .city-name {
+                font-size: 1.5rem;
+            }
+
+            .metric-value {
+                font-size: 1.5rem;
+            }
+
+            .comparison-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .city-card,
+        .crime-comparison-item,
+        .score-card {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        .crime-comparison-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .crime-comparison-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .crime-comparison-item:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CrimePredix</span>
+            </div>
+            <a href="/" class="nav-link">Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Relocation Decision Engine</h1>
+            <p>Compare two cities for safety and crime rates</p>
+        </div>
+
+        <!-- Comparison Card -->
+        <div class="comparison-card">
+            <!-- City Comparison Section -->
+            <div class="city-comparison">
+                <!-- City 1 -->
+                <div class="city-card">
+                    <div class="city-name">
+                        <span class="city-icon">🏙️</span>
+                        {{city1_name}}
+                    </div>
+                    <div class="crime-metric">
+                        <div class="metric-label">Crime Rate ({{crime_type}})</div>
+                        <div class="metric-value">{{crime1_rate}}</div>
+                        <span class="crime-status {% if crime1_rate <= 1 %}status-low{% elif crime1_rate <= 5 %}status-medium{% elif crime1_rate <= 15 %}status-medium{% else %}status-high{% endif %}">
+                            {{city1_status}}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Comparison Indicator -->
+                <div class="comparison-indicator">
+                    <div class="vs-badge">VS</div>
+                    <div class="comparison-text">
+                        {% if percent_change >= 0 %}
+                            +{{percent_change}}% higher
+                        {% else %}
+                            {{percent_change}}% lower
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- City 2 -->
+                <div class="city-card">
+                    <div class="city-name">
+                        <span class="city-icon">🏢</span>
+                        {{city2_name}}
+                    </div>
+                    <div class="crime-metric">
+                        <div class="metric-label">Crime Rate ({{crime_type}})</div>
+                        <div class="metric-value">{{crime2_rate}}</div>
+                        <span class="crime-status {% if crime2_rate <= 1 %}status-low{% elif crime2_rate <= 5 %}status-medium{% elif crime2_rate <= 15 %}status-medium{% else %}status-high{% endif %}">
+                            {{city2_status}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verdict Section -->
+            <div class="verdict-section">
+                <div class="verdict-title">Relocation Verdict</div>
+                <div class="verdict-main">
+                    {% if is_safer %}
+                        ✓ {{city2_name}} is Safer
+                    {% else %}
+                        ✓ {{city1_name}} is Safer
+                    {% endif %}
+                </div>
+                <div class="verdict-description">
+                    {% if is_safer %}
+                        Moving from {{city1_name}} to {{city2_name}} would reduce {{crime_type}} risk by <strong>{{improvement}}</strong> points. This is a <strong>{{percent_change|abs|round(1)}}% improvement</strong> in safety for this crime category.
+                    {% else %}
+                        {{city2_name}} has {{improvement|round(2)}} more cases of {{crime_type}} than {{city1_name}}. Staying in {{city1_name}} would be {{percent_change|abs|round(1)}}% safer for this crime category.
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Overall Score -->
+            <div class="overall-score">
+                <div class="score-card">
+                    <div class="score-icon">🏆</div>
+                    <div class="score-value">{{overall_safer}}</div>
+                    <div class="score-label">Overall Safer City</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-icon">📊</div>
+                    <div class="score-value">{{overall_percent}}%</div>
+                    <div class="score-label">Safety Difference</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-icon">📅</div>
+                    <div class="score-value">{{year}}</div>
+                    <div class="score-label">Prediction Year</div>
+                </div>
+            </div>
+
+            <!-- Trade-off Analysis -->
+            <div class="tradeoff-section">
+                <h3 class="section-title">
+                    <i class="fas fa-exchange-alt"></i>
+                    Crime Category Trade-off Analysis
+                </h3>
+                <p style="color: #64748b; margin-bottom: 1.5rem;">
+                    How crime rates for different categories compare between the two cities. Green indicates safer, red indicates higher risk.
+                </p>
+                
+                {% for crime in all_crimes %}
+                    <div class="crime-comparison-item">
+                        <div class="crime-name">
+                            <span class="crime-icon">📍</span>
+                            {{crime.crime}}
+                        </div>
+                        <div class="rate-display">{{crime.city1_rate}}</div>
+                        <div class="rate-display">{{crime.city2_rate}}</div>
+                        <div>
+                            {% if crime.change < 0 %}
+                                <span class="change-badge change-positive">
+                                    {{crime.change}}% ✓
+                                </span>
+                            {% else %}
+                                <span class="change-badge change-negative">
+                                    +{{crime.change}}% ✗
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    New Comparison
+                </a>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add animation on page load
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.crime-comparison-item').forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation = 'slideUp 0.6s ease-out forwards';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
